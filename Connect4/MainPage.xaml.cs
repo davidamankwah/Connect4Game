@@ -4,24 +4,25 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 using Xamarin.Forms;
 
 namespace Connect4
 {
     public partial class MainPage : ContentPage
     {
+        //Global varuable
         const int MAX_ROWS = 6;
         const int MAX_COLS = 7;
-        int turn;
+        int playerTurn;
         int colorturn = 1;
-        int startgame = 0;
         int row = 6, row2 = 6, row3 = 6, row4 = 6, row5 = 6;
         int col;
-        int player1 = 0, player2=0;
-        Color token;
+        Color colorPiece;
         BoxView bv;
-        BoxView q;
-        BoxView sq;
+        BoxView yellow;
+        BoxView red;
+        
         public MainPage()
         {
             InitializeComponent();
@@ -29,18 +30,17 @@ namespace Connect4
 
         private async void TapGestureRecognizer_Tapped(object sender, EventArgs e)
         {
-
-            turn = 1;
+            playerTurn = 1;
 
             bv = (BoxView)sender;
             // move the boxview.
             double yDistance = 5 * (GridC4.Height / 8);
             await bv.TranslateTo(0, yDistance, 600);
-            bv.TranslationY = 0; // reset after translation to avoid unexpected moving
-           // bv.SetValue(Grid.RowProperty, 3);
-            //bv.LayoutTo
-
+            bv.TranslationY = 0; // reset to avoid unexpected mov
+           
             GridC4.RaiseChild(ImgC4Grid);   // raise the z axis value
+
+            //create tap gesture
             TapGestureRecognizer t = new TapGestureRecognizer();
             t.Tapped += TapGestureRecognizer_Tapped_1;
 
@@ -56,46 +56,43 @@ namespace Connect4
             GridC4.Children.Add(bv);
             GridC4.LowerChild(bv);
 
-
-            
             
         }
         private void DropPiece(int r, int c)
         {
-            if (turn == 1)
+            //drop red piece for player 1
+            if (playerTurn == 1)
             {
+                red = new BoxView();
+                red.BackgroundColor = Color.Red;
 
-                sq = new BoxView();
-                sq.BackgroundColor = Color.Red;
-
-                sq.HeightRequest = GridC4.Height / 7;
-                sq.WidthRequest = GridC4.Width / 6;
-                sq.CornerRadius = sq.WidthRequest / 2;
-                sq.SetValue(Grid.RowProperty, r);
-                sq.SetValue(Grid.ColumnProperty, c);
-                GridC4.Children.Add(sq);
+                red.HeightRequest = GridC4.Height / 7;
+                red.WidthRequest = GridC4.Width / 6;
+                red.CornerRadius = red.WidthRequest / 2;
+                red.SetValue(Grid.RowProperty, r);
+                red.SetValue(Grid.ColumnProperty, c);
+                GridC4.Children.Add(red);
                 LblFeedback.Text = "Player1 turn";
-                token = sq.BackgroundColor;
-                player1++;
-                turn = 2;
+                colorPiece = red.BackgroundColor;
+                playerTurn = 2;
             }
 
-            else if (turn == 2)
+            //drop yellow piece for player 2
+            else if (playerTurn == 2)
             {
 
-                q = new BoxView();
-                q.BackgroundColor = Color.Yellow;
+                yellow = new BoxView();
+                yellow.BackgroundColor = Color.Yellow;
 
-                q.HeightRequest = GridC4.Height / 7;
-                q.WidthRequest = GridC4.Width / 6;
-                q.CornerRadius = q.WidthRequest / 2;
-                q.SetValue(Grid.RowProperty, r);
-                q.SetValue(Grid.ColumnProperty, c);
-                GridC4.Children.Add(q);
+                yellow.HeightRequest = GridC4.Height / 7;
+                yellow.WidthRequest = GridC4.Width / 6;
+                yellow.CornerRadius = yellow.WidthRequest / 2;
+                yellow.SetValue(Grid.RowProperty, r);
+                yellow.SetValue(Grid.ColumnProperty, c);
+                GridC4.Children.Add(yellow);
                 LblFeedback.Text = "Player2 turn";
-                token = sq.BackgroundColor;
-                player2++;
-                turn = 1;
+                colorPiece = red.BackgroundColor;
+                playerTurn = 1;
 
             }
 
@@ -103,31 +100,53 @@ namespace Connect4
 
         private void BtnWriteFile_Clicked(object sender, EventArgs e)
         {
+            // Environment Variables
+            string fullFileName;
+            string path;
+            string line = "connect 4";
 
+            path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            // Path is in System.io
+            fullFileName = Path.Combine(path, EntryFileName.Text);
+
+            // call from Utils clas
+            WriteToFile(fullFileName, line);
+        }
+
+        //use to write file
+        public static void WriteToFile(string fullFileName, string StuffToWrite)
+        {
+            using (var writer = new StreamWriter(fullFileName, false))
+            {
+                writer.WriteLine(StuffToWrite);
+            }
+            
         }
 
         private async void TapGestureRecognizer_Tapped_1(object sender, EventArgs e)
         {
 
-            BoxView b = (BoxView)sender;
+            BoxView b = (BoxView)sender; //piece selection
 
             Rectangle originalRect = new Rectangle(b.X, b.Y, b.Width, b.Height);
 
             Rectangle smallRect = new Rectangle(b.X + b.Width / 2, b.Y,
                                                 1, b.Height);
-
-            await AnimateIn(b, smallRect);
-            await AnimateOut(b, originalRect);
+            //spin animation
+            await AnimatesIn(b, smallRect);
+            await AnimatesOut(b, originalRect);
 
 
 
             col = (int)b.GetValue(Grid.ColumnProperty);
+
+            //check which column the piece will drop down the row
             if (col == 2)
             {
                 DropPiece(row2, col);
                 row2--;
-                checkForWinner(token, player1);
-                checkForWinner(token, player2);
+                checkForWinner(colorPiece);
+                checkForWinner(colorPiece);
             }
 
             if (col == 3)
@@ -135,86 +154,96 @@ namespace Connect4
                 
                 DropPiece(row, col);
                 row--;
-                checkForWinner(token, player1);
-                checkForWinner(token, player2);
+                checkForWinner(colorPiece);
+                checkForWinner(colorPiece);
             }
 
             if (col == 4)
             {
                 DropPiece(row3, col);
                 row3--;
-                checkForWinner(token, player1);
-                checkForWinner(token, player2);
+                checkForWinner(colorPiece);
+                checkForWinner(colorPiece);
             }
 
             if (col == 5)
             {
                 DropPiece(row4, col);
                 row4--;
-                checkForWinner(token, player1);
-                checkForWinner(token, player2);
+                checkForWinner(colorPiece);
+                checkForWinner(colorPiece);
             }
 
             if (col == 6)
             {
                 DropPiece(row5, col);
                 row5--;
-                checkForWinner(token, player1);
-                checkForWinner(token, player2);
+                checkForWinner(colorPiece);
+                checkForWinner(colorPiece);
             }
 
+            //call method
+            ColorTurn(b);
+        }
 
+        private void ColorTurn(BoxView bb)
+        {
             if (colorturn == 1)
             {
-                b.BackgroundColor = Color.Red;
+                bb.BackgroundColor = Color.Red;
                 colorturn = 2;
             }
             else if (colorturn == 2)
             {
-                b.BackgroundColor = Color.Yellow;
+                bb.BackgroundColor = Color.Yellow;
                 colorturn = 1;
             }
 
-
         }
 
-        private Task AnimateIn(BoxView b, Rectangle r)
+        private Task AnimatesIn(BoxView b, Rectangle r)
         {
             return b.LayoutTo(r, 350, Easing.SinIn);
         }
 
-        private Task AnimateOut(BoxView b, Rectangle r)
+        private Task AnimatesOut(BoxView b, Rectangle r)
         {
             return b.LayoutTo(r, 350, Easing.SinOut);
         }
 
         private void BtnStartGame_Clicked(object sender, EventArgs e)
         {
-            GridC4.Children.Remove(q);
-            GridC4.Children.Remove(sq);
+            //remove pieces
+            GridC4.Children.Remove(yellow);
+            GridC4.Children.Remove(red);
 
+            //reset row to start new game
             row = 6;
             row2 = 6;
             row3 = 6;
             row4 = 6;
-            row5 = 6; 
-
+            row5 = 6;
         }
 
-        private void checkForWinner(Color c, int p)
+        private void checkForWinner(Color c)
         {
+            //check win
             for (int i =0; i < MAX_ROWS; i++) 
             {
-                if (c == Color.Red && p == 4)
+                int count = 0;
+                for (int x = 0; x < MAX_COLS; x++)
                 {
-                   
-                    LblFeedback.Text = "Player 1 wins";
-                }
+                    if (c == Color.Red && count == 4)
+                    {
 
-                else if (c == Color.Yellow && p == 4)
-                {
-                   
-                    LblFeedback.Text = "Player 2 wins";
+                        LblFeedback.Text = "Player 1 wins";
+                    }
+
+                    else if (c == Color.Yellow && count == 4)
+                    {
+
+                        LblFeedback.Text = "Player 2 wins";
+                    }
                 }
                 
             }

@@ -34,6 +34,7 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
+            <!--  Boxview -->
             <BoxView BackgroundColor="Yellow" CornerRadius="50" HeightRequest="50" WidthRequest="50" Grid.Row="0" Grid.Column="5" >
                 <BoxView.GestureRecognizers>
                     <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_1"/>
@@ -54,21 +55,27 @@
                     <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_1"/>
                 </BoxView.GestureRecognizers>
             </BoxView>
+            <!--  Connect4 image -->
             <Image x:Name="ImgC4Grid" Source="C4Grid.png" Grid.Row="1" Grid.Column="1" WidthRequest="700" HeightRequest="600" Grid.RowSpan="6" Grid.ColumnSpan="7"/>
-            <BoxView BackgroundColor="Red"  CornerRadius="50" HeightRequest="30" WidthRequest="50" Grid.Row="0" Grid.Column="3">
+            <BoxView BackgroundColor="Yellow"  CornerRadius="50" HeightRequest="30" WidthRequest="50" Grid.Row="0" Grid.Column="3">
+                <BoxView.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_1"/>
+                </BoxView.GestureRecognizers>
+            </BoxView>
+            <BoxView BackgroundColor="Green"  CornerRadius="50" HeightRequest="30" WidthRequest="50" Grid.Row="0" Grid.Column="1">
                 <BoxView.GestureRecognizers>
                     <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
                 </BoxView.GestureRecognizers>
             </BoxView>
         </Grid>
         <StackLayout HorizontalOptions="Center">
-            <Label x:Name="LblFeedback" Text="Press Red Piece to start" FontSize="Large" TextColor="Crimson"/>
+            <Label x:Name="LblFeedback" Text="Tap Green Piece to start" FontSize="Large" TextColor="Crimson"/>
         </StackLayout>
         <Button x:Name="BtnStartGame" Text="Start New Game" HorizontalOptions="Center" Clicked="BtnStartGame_Clicked"/>
 
         <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Margin="0, 5">
             <Button x:Name="BtnWriteFile" Text="Write File" Margin="4, 0"
-                    Clicked="BtnWriteFile_Clicked" />
+                    Clicked="BtnWriteFile_Clicked"/>
         </StackLayout>
     </StackLayout>
     

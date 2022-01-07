@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Connect4.MainPage">
+
+    <StackLayout>
+        <Frame BackgroundColor="CornflowerBlue" Padding="14" CornerRadius="0">
+            <Label Text="Welcome to Connect 4" HorizontalTextAlignment="Center" TextColor="Green" FontSize="Medium"/>
+        </Frame>
+        <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
+                <Label Text="Enter filename: "/>
+                <Entry x:Name="EntryFileName" Text="test.txt" Margin="0, 5" />
+            </StackLayout>
+            <Grid x:Name="GridC4" BackgroundColor="Gray" HorizontalOptions="Center" VerticalOptions="Center" WidthRequest="900" HeightRequest="800" RowSpacing="5" ColumnSpacing="5">
+            <!--  game is 7 column and 6 rows.9 column and 8 rows for grid -->
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <BoxView BackgroundColor="Yellow" CornerRadius="50" HeightRequest="50" WidthRequest="50" Grid.Row="0" Grid.Column="5" >
+                <BoxView.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_1"/>
+                </BoxView.GestureRecognizers>
+            </BoxView>
+            <BoxView BackgroundColor="Yellow" CornerRadius="50" HeightRequest="50" WidthRequest="50" Grid.Row="0" Grid.Column="4" >
+                <BoxView.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_1"/>
+                </BoxView.GestureRecognizers>
+            </BoxView>
+            <BoxView BackgroundColor="Yellow" CornerRadius="50" HeightRequest="50" WidthRequest="50" Grid.Row="0" Grid.Column="2">
+                <BoxView.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_1"/>
+                </BoxView.GestureRecognizers>
+            </BoxView>
+            <BoxView BackgroundColor="Yellow" CornerRadius="50" HeightRequest="50" WidthRequest="50" Grid.Row="0" Grid.Column="6">
+                <BoxView.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_1"/>
+                </BoxView.GestureRecognizers>
+            </BoxView>
+            <Image x:Name="ImgC4Grid" Source="C4Grid.png" Grid.Row="1" Grid.Column="1" WidthRequest="700" HeightRequest="600" Grid.RowSpan="6" Grid.ColumnSpan="7"/>
+            <BoxView BackgroundColor="Red"  CornerRadius="50" HeightRequest="30" WidthRequest="50" Grid.Row="0" Grid.Column="3">
+                <BoxView.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+                </BoxView.GestureRecognizers>
+            </BoxView>
+        </Grid>
+        <StackLayout HorizontalOptions="Center">
+            <Label x:Name="LblFeedback" Text="Press Red Piece to start" FontSize="Large" TextColor="Crimson"/>
+        </StackLayout>
+        <Button x:Name="BtnStartGame" Text="Start New Game" HorizontalOptions="Center" Clicked="BtnStartGame_Clicked"/>
+
+        <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Margin="0, 5">
+            <Button x:Name="BtnWriteFile" Text="Write File" Margin="4, 0"
+                    Clicked="BtnWriteFile_Clicked" />
+        </StackLayout>
+    </StackLayout>
+    
+
+</ContentPage>
